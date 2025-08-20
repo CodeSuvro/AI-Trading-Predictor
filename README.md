@@ -72,6 +72,6 @@ If you’d like to collaborate, feel free to fork this repo and open a pull requ
 
 ## 📩 Contact  
 
-Built with ☕ + 💻 by **[Your Name]**  
+Built with ☕ + 💻 by Shubhrodeep Halder  
 - LinkedIn: https://www.linkedin.com/in/shubhrodeep-halder-a4543a30a/   
 - Email: shubhrodeephalder2807@gmail.com 
