@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeInsight | Advanced Trading Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0f172a;
+            --accent: #22c55e;
+            --danger: #ef4444;
+            --dark: #0f0f0f;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --card-bg: rgba(15, 23, 42, 0.8);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--light);
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1620228885847-9eab2a1adddc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80') no-repeat center center/cover;
+            opacity: 0.15;
+            z-index: -1;
+        }
+        
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo-icon {
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.05rem;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            transition: var(--transition);
+            border-radius: 10px;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(30, 41, 59, 0.8);
+            padding: 0.6rem 1rem;
+            border-radius: 50px;
+            width: 250px;
+            transition: var(--transition);
+        }
+        
+        .search-box:focus-within {
+            background: rgba(30, 41, 59, 1);
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+        
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--light);
+            outline: none;
+            width: 100%;
+            padding: 0 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .search-box i {
+            color: var(--gray);
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            position: relative;
+            padding-top: 80px;
+        }
+        
+        .hero-content {
+            max-width: 650px;
+            z-index: 2;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, var(--light), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.9rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            outline: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--light);
+            border: 2px solid var(--gray);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(100, 116, 139, 0.2);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 6rem 5%;
+            background: rgba(15, 23, 42, 0.7);
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-desc {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+        
+        /* News Section */
+        .news {
+            padding: 6rem 5%;
+        }
+        
+        .news-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .news-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+        }
+        
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .news-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .news-content {
+            padding: 1.5rem;
+        }
+        
+        .news-source {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .news-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+        
+        .news-desc {
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .news-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Trading Widget Section */
+        .trading-widget {
+            padding: 0 5% 6rem;
+        }
+        
+        .widget-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            height: 600px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+        }
+        
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        
+        .symbol-selector {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .symbol-btn {
+            padding: 0.5rem 1.5rem;
+            background: rgba(30, 41, 59, 0.5);
+            border: none;
+            color: var(--light);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .symbol-btn.active, .symbol-btn:hover {
+            background: var(--primary);
+        }
+        
+        /* Prediction Section */
+        .prediction {
+            padding: 6rem 5%;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.7);
+        }
+        
+        .prediction-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .prediction-desc {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+        
+        .prediction-btn {
+            background: linear-gradient(90deg, var(--accent), #16a34a);
+            color: white;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+        }
+        
+        .prediction-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(34, 197, 94, 0.6);
+        }
+        
+        /* Footer */
+        .footer {
+            background: rgba(2, 6, 23, 0.9);
+            padding: 4rem 5% 2rem;
+            border-top: 1px solid rgba(100, 116, 139, 0.2);
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-col h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+        
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(30, 41, 59, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        
+        .social-icon:hover {
+            background: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(100, 116, 139, 0.2);
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .nav-links {
+                gap: 1.5rem;
+            }
+            
+            .hero-title {
+                font-size: 3rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 5%;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                width: 180px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .symbol-selector {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .search-box {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-chart-line logo-icon"></i>
+            <span class="logo-text">TradeInsight</span>
+        </div>
+        
+        <div class="nav-links">
+            <a href="#" class="nav-link">Home</a>
+            <a href="#features" class="nav-link">Features</a>
+            <a href="#news" class="nav-link">News</a>
+            <a href="#trading" class="nav-link">Markets</a>
+            <a href="#prediction" class="nav-link">AI Prediction</a>
+        </div>
+        
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search stocks, crypto...">
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Advanced Trading Platform for Modern Investors</h1>
+            <p class="hero-subtitle">Real-time market data, AI-powered predictions, and comprehensive financial news - all in one powerful platform designed to give you the trading edge.</p>
+            <div class="cta-buttons">
+                <button class="btn btn-primary">
+                    <i class="fas fa-play"></i> Get Started
+                </button>
+                <button class="btn btn-secondary">
+                    <i class="fas fa-chart-bar"></i> Live Demo
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2 class="section-title">Powerful Trading Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-bolt feature-icon"></i>
+                <h3 class="feature-title">Real-time Data</h3>
+                <p class="feature-desc">Access live market data from global exchanges with millisecond latency using WebSocket technology.</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-newspaper feature-icon"></i>
+                <h3 class="feature-title">Financial News</h3>
+                <p class="feature-desc">Stay updated with the latest market-moving news curated from top financial publications.</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-robot feature-icon"></i>
+                <h3 class="feature-title">AI Predictions</h3>
+                <p class="feature-desc">Our advanced AI models analyze market trends to forecast price movements with high accuracy.</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-exchange-alt feature-icon"></i>
+                <h3 class="feature-title">Multi-Exchange</h3>
+                <p class="feature-desc">Trade stocks, crypto, and forex all from a single platform with unified portfolio tracking.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section class="news" id="news">
+        <div class="news-header">
+            <h2 class="section-title">Latest Financial News</h2>
+            <button class="btn btn-secondary">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+        
+        <div class="news-grid">
+            <div class="news-card">
+                <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Stock Market" class="news-img">
+                <div class="news-content">
+                    <div class="news-source">
+                        <i class="fas fa-building"></i>
+                        <span>Financial Times</span>
+                    </div>
+                    <h3 class="news-title">Global Markets Rally as Inflation Concerns Ease</h3>
+                    <p class="news-desc">Major indices hit record highs as central banks signal a more dovish approach to monetary policy in the coming months.</p>
+                    <div class="news-date">
+                        <i class="far fa-clock"></i>
+                        <span>2 hours ago</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <img src="https://images.unsplash.com/photo-1604594849809-dfedbc827105?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Bitcoin" class="news-img">
+                <div class="news-content">
+                    <div class="news-source">
+                        <i class="fab fa-bitcoin"></i>
+                        <span>Crypto Daily</span>
+                    </div>
+                    <h3 class="news-title">Bitcoin Surpasses $45,000 Amid Institutional Adoption</h3>
+                    <p class="news-desc">Leading cryptocurrency reaches 18-month high as major financial institutions announce crypto custody services.</p>
+                    <div class="news-date">
+                        <i class="far fa-clock"></i>
+                        <span>5 hours ago</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1311&q=80" alt="Tech Stocks" class="news-img">
+                <div class="news-content">
+                    <div class="news-source">
+                        <i class="fas fa-microchip"></i>
+                        <span>Tech Investor</span>
+                    </div>
+                    <h3 class="news-title">AI Stocks Lead Tech Sector Recovery</h3>
+                    <p class="news-desc">Companies specializing in artificial intelligence see double-digit gains as demand for AI solutions surges globally.</p>
+                    <div class="news-date">
+                        <i class="far fa-clock"></i>
+                        <span>1 day ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trading Widget Section -->
+    <section class="trading-widget" id="trading">
+        <h2 class="section-title">Live Market Data</h2>
+        
+        <div class="widget-header">
+            <div class="symbol-selector">
+                <button class="symbol-btn active">AAPL</button>
+                <button class="symbol-btn">GOOGL</button>
+                <button class="symbol-btn">MSFT</button>
+                <button class="symbol-btn">BTCUSDT</button>
+            </div>
+            <div>
+                <button class="symbol-btn">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+            </div>
+        </div>
+        
+        <div class="widget-container">
+            <canvas id="trading-chart"></canvas>
+        </div>
+    </section>
+
+    <!-- Prediction Section -->
+    <section class="prediction" id="prediction">
+        <h2 class="section-title">AI-Powered Market Predictions</h2>
+        
+        <div class="prediction-content">
+            <p class="prediction-desc">
+                Our advanced AI models analyze millions of data points including price history, trading volume, market sentiment, and news events to forecast future price movements with unprecedented accuracy. Get ahead of the market with our predictive insights.
+            </p>
+            
+            <button class="btn prediction-btn" id="predict-btn">
+                <i class="fas fa-brain"></i> Try AI Prediction
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo">
+                    <i class="fas fa-chart-line logo-icon"></i>
+                    <span class="logo-text">TradeInsight</span>
+                </div>
+                <p style="color: #94a3b8; line-height: 1.7; margin-top: 1.5rem;">
+                    Advanced trading platform with real-time data, AI predictions, and comprehensive financial insights for modern investors.
+                </p>
+                <div class="social-links">
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Markets</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Stocks</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Cryptocurrency</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Forex</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Commodities</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Indices</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Resources</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Market News</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Economic Calendar</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Trading Academy</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> API Documentation</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Market Analysis</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Company</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Careers</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            &copy; 2023 TradeInsight. All rights reserved. This is a demonstration platform only.
+        </div>
+    </footer>
+
+    <script>
+        // Trading Chart
+        const ctx = document.getElementById('trading-chart').getContext('2d');
+        
+        // Generate mock trading data
+        const labels = [];
+        const data = [];
+        let currentValue = 150;
+        
+        for (let i = 0; i < 100; i++) {
+            labels.push('');
+            const change = (Math.random() - 0.5) * 4;
+            currentValue += change;
+            data.push(currentValue);
+        }
+        
+        // Create chart
+        const tradingChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'AAPL',
+                    data: data,
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(100, 116, 139, 0.1)'
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                }
+            }
+        });
+        
+        // Simulate live updates
+        setInterval(() => {
+            tradingChart.data.labels.push('');
+            tradingChart.data.labels.shift();
+            
+            const lastValue = tradingChart.data.datasets[0].data[tradingChart.data.datasets[0].data.length - 1];
+            const change = (Math.random() - 0.5) * 3;
+            const newValue = lastValue + change;
+            
+            tradingChart.data.datasets[0].data.push(newValue);
+            tradingChart.data.datasets[0].data.shift();
+            
+            tradingChart.update();
+        }, 2000);
+        
+        // Symbol selector
+        const symbolButtons = document.querySelectorAll('.symbol-btn');
+        symbolButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                symbolButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Update chart with new symbol
+                tradingChart.data.datasets[0].label = button.textContent;
+                
+                // Generate new data
+                const newData = [];
+                let newValue = 150;
+                
+                for (let i = 0; i < 100; i++) {
+                    const change = (Math.random() - 0.5) * 4;
+                    newValue += change;
+                    newData.push(newValue);
+                }
+                
+                tradingChart.data.datasets[0].data = newData;
+                tradingChart.update();
+            });
+        });
+        
+        // Prediction button
+        document.getElementById('predict-btn').addEventListener('click', () => {
+            window.open('predict.html', '_blank');
+        });
+        
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
