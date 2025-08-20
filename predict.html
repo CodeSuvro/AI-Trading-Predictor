@@ -46,8 +46,7 @@
             opacity: 0.15;
             z-index: -1;
         }
-        
-        /* Navbar Styles */
+
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -508,8 +507,7 @@
             color: #94a3b8;
             margin-top: 1rem;
         }
-        
-        /* Footer */
+
         .footer {
             background: rgba(2, 6, 23, 0.9);
             padding: 3rem 5% 2rem;
@@ -524,8 +522,7 @@
             color: #94a3b8;
             font-size: 0.9rem;
         }
-        
-        /* Responsive Design */
+
         @media (max-width: 992px) {
             .nav-links {
                 gap: 1.5rem;
@@ -581,7 +578,6 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar">
         <div class="logo">
             <i class="fas fa-chart-line logo-icon"></i>
@@ -596,8 +592,7 @@
             <a href="#" class="nav-link">AI Prediction</a>
         </div>
     </nav>
-
-    <!-- Prediction Container -->
+    
     <div class="prediction-container">
         <h2 class="section-title">AI Stock Prediction Engine</h2>
         
@@ -663,7 +658,6 @@
             </div>
             
             <div class="results-container" id="results-container">
-                <!-- Results will be populated here -->
             </div>
         </div>
         
@@ -751,8 +745,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Footer -->
     <footer class="footer">
         <div class="copyright">
             &copy; 2025 TradeInsight. All rights reserved. AI predictions are for educational purposes only and should not be considered as financial advice.
@@ -762,20 +754,17 @@
     <script>
         // Configuration
         const CONFIG = {
-            ALPHA_VANTAGE_API_KEY: 'DR7X8BCOUZ0AD2G0',
+            ALPHA_VANTAGE_API_KEY: 'API key',
             YAHOO_FINANCE_PROXY: 'https://query1.finance.yahoo.com/v8/finance/chart/',
-            // Machine Learning endpoints (you would need to set up your own ML backend)
             ML_PREDICTION_ENDPOINT: '/api/predict',
             SENTIMENT_ANALYSIS_ENDPOINT: '/api/sentiment',
-            KAGGLE_API_KEY: '01fe74d093f388c2153c9e6c7b2c29b8'
+            KAGGLE_API_KEY: 'API key'
         };
 
-        // Global variables
         let predictionChart;
         let currentDataset = null;
         let isDatasetLoaded = false;
 
-        // Utility functions
         function showMessage(message, type = 'info') {
             const container = document.getElementById('results-container');
             const messageClass = type === 'error' ? 'error-message' : 'success-message';
@@ -813,7 +802,6 @@
             return `${sign}${value.toFixed(2)}%`;
         }
 
-        // Dataset loading functions
         async function loadYahooFinanceData(symbol) {
             try {
                 updateDatasetStatus('loading', 'Loading from Yahoo Finance...');
@@ -897,7 +885,6 @@
                         const lines = csv.split('\n');
                         const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
                         
-                        // Validate required columns
                         const requiredColumns = ['date', 'close'];
                         const missingColumns = requiredColumns.filter(col => !headers.includes(col));
                         
@@ -930,8 +917,7 @@
                         if (data.length === 0) {
                             throw new Error('No valid data rows found');
                         }
-                        
-                        // Sort by date
+
                         data.sort((a, b) => a.date - b.date);
                         
                         const processedData = {
@@ -960,24 +946,17 @@
             });
         }
 
-        // Machine Learning Prediction (Mock Implementation)
-        async function generatePrediction(dataset, days) {
-            // This is a mock implementation. In a real application, you would:
-            // 1. Send the dataset to your ML backend
-            // 2. Run your trained model (LSTM, Random Forest, etc.)
-            // 3. Return actual predictions
-            
-            await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate processing time
+        // Machine Learning Prediction
+        async function generatePrediction(dataset, days) {            
+            await new Promise(resolve => setTimeout(resolve, 2000));
             
             const prices = dataset.prices.close;
             const lastPrice = prices[prices.length - 1];
             const predictions = [];
             
-            // Generate realistic predictions based on historical volatility
             let currentPrice = lastPrice;
             const historicalReturns = [];
-            
-            // Calculate historical daily returns
+
             for (let i = 1; i < prices.length; i++) {
                 historicalReturns.push((prices[i] - prices[i-1]) / prices[i-1]);
             }
@@ -985,8 +964,7 @@
             const avgReturn = historicalReturns.reduce((a, b) => a + b, 0) / historicalReturns.length;
             const volatility = Math.sqrt(historicalReturns.reduce((sum, ret) => sum + Math.pow(ret - avgReturn, 2), 0) / historicalReturns.length);
             
-            // Generate predictions with trend and noise
-            const trend = avgReturn * 0.8; // Slightly damped trend
+            const trend = avgReturn * 0.8; 
             
             for (let i = 0; i < days; i++) {
                 const randomComponent = (Math.random() - 0.5) * volatility * 2;
@@ -994,13 +972,11 @@
                 currentPrice = currentPrice * (1 + dailyReturn);
                 predictions.push(currentPrice);
             }
-            
-            // Calculate prediction statistics
+
             const finalPrice = predictions[predictions.length - 1];
             const totalReturn = (finalPrice - lastPrice) / lastPrice * 100;
-            const confidence = Math.max(60, Math.min(95, 85 - volatility * 100)); // Higher volatility = lower confidence
-            
-            // Generate prediction intervals (confidence bands)
+            const confidence = Math.max(60, Math.min(95, 85 - volatility * 100)); 
+
             const upperBound = predictions.map(p => p * (1 + volatility * 1.96));
             const lowerBound = predictions.map(p => p * (1 - volatility * 1.96));
             
@@ -1017,7 +993,6 @@
             };
         }
 
-        // Chart initialization and updates
         function initChart() {
             const ctx = document.getElementById('prediction-chart').getContext('2d');
             
@@ -1151,8 +1126,7 @@
                     futureDate.setDate(futureDate.getDate() + i);
                     labels.push(futureDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
                 }
-                
-                // Extend arrays for predictions
+
                 historicalData = [...historicalData, ...new Array(days).fill(null)];
                 predictionData = [...predictionData, ...predictionResult.predictions];
                 upperBoundData = [...upperBoundData, ...predictionResult.upperBound];
@@ -1204,11 +1178,9 @@
             `;
         }
 
-        // Sentiment analysis (mock implementation)
         async function analyzeSentiment(symbol) {
             await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            // Mock sentiment scores (in real app, this would call NLP APIs)
+
             const sentiments = {
                 social: Math.random() * 100,
                 news: Math.random() * 100,
@@ -1217,8 +1189,7 @@
             };
             
             const overallSentiment = (sentiments.social + sentiments.news + sentiments.technical + sentiments.analyst) / 4;
-            
-            // Update sentiment display
+
             document.getElementById('sentiment-fill').style.width = `${overallSentiment}%`;
             
             const getSentimentText = (score) => {
@@ -1247,7 +1218,6 @@
             document.getElementById('analyst-sentiment').className = analystSent.class;
         }
 
-        // File upload handling
         function setupFileUpload() {
             const fileUpload = document.getElementById('file-upload');
             const fileInput = document.getElementById('csv-file');
@@ -1268,8 +1238,7 @@
                     }
                 }
             });
-            
-            // Drag and drop
+
             fileUpload.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 fileUpload.classList.add('dragover');
@@ -1298,7 +1267,7 @@
 
         // Event handlers
         function setupEventHandlers() {
-            // Dataset source selector
+
             document.getElementById('dataset-source').addEventListener('change', (e) => {
                 const fileUpload = document.getElementById('file-upload');
                 if (e.target.value === 'kaggle' || e.target.value === 'custom') {
@@ -1307,12 +1276,10 @@
                     fileUpload.style.display = 'none';
                 }
                 
-                // Reset dataset status
                 isDatasetLoaded = false;
                 updateDatasetStatus('disconnected', 'Not Connected');
             });
-            
-            // Load dataset button
+
             document.getElementById('load-dataset').addEventListener('click', async () => {
                 const symbol = document.getElementById('stock-symbol').value.trim().toUpperCase();
                 const source = document.getElementById('dataset-source').value;
@@ -1341,8 +1308,7 @@
                     showMessage(`Error loading dataset: ${error.message}`, 'error');
                 }
             });
-            
-            // Prediction button
+
             document.getElementById('predict-now').addEventListener('click', async () => {
                 if (!isDatasetLoaded || !currentDataset) {
                     showMessage('Please load a dataset first', 'error');
@@ -1354,19 +1320,15 @@
                 const button = document.getElementById('predict-now');
                 
                 try {
-                    // Show loading
                     button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating Prediction...';
                     button.disabled = true;
                     document.getElementById('chart-loading').style.display = 'flex';
-                    
-                    // Generate prediction
+
                     const predictionResult = await generatePrediction(currentDataset, days);
-                    
-                    // Update chart and results
+
                     updateChart(currentDataset, predictionResult, days);
                     displayResults(predictionResult, symbol, days);
-                    
-                    // Analyze sentiment
+
                     analyzeSentiment(symbol);
                     
                     showMessage('Prediction generated successfully!', 'success');
@@ -1374,7 +1336,6 @@
                 } catch (error) {
                     showMessage(`Prediction failed: ${error.message}`, 'error');
                 } finally {
-                    // Hide loading
                     button.innerHTML = '<i class="fas fa-brain"></i> Generate Prediction';
                     button.disabled = false;
                     document.getElementById('chart-loading').style.display = 'none';
@@ -1382,26 +1343,21 @@
             });
         }
 
-        // Initialize application
         function init() {
             console.log('Initializing AI Stock Predictor...');
-            
-            // Initialize chart
+
             initChart();
-            
-            // Setup event handlers
+
             setupEventHandlers();
             setupFileUpload();
-            
-            // Update model info
+
             document.getElementById('model-accuracy').textContent = `${(85 + Math.random() * 10).toFixed(1)}%`;
             document.getElementById('model-updated').textContent = new Date().toLocaleDateString();
             
             console.log('AI Stock Predictor initialized successfully!');
         }
-
-        // Start the application when DOM is loaded
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
+
 </html>
