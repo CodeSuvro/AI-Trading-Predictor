@@ -45,8 +45,7 @@
             opacity: 0.15;
             z-index: -1;
         }
-        
-        /* Navbar Styles */
+
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -146,8 +145,7 @@
         .search-box i {
             color: var(--gray);
         }
-        
-        /* Hero Section */
+
         .hero {
             min-height: 100vh;
             display: flex;
@@ -219,8 +217,7 @@
         .btn-secondary:hover {
             background: rgba(100, 116, 139, 0.2);
         }
-        
-        /* Features Section */
+
         .features {
             padding: 6rem 5%;
             background: rgba(15, 23, 42, 0.7);
@@ -282,8 +279,7 @@
             color: #cbd5e1;
             line-height: 1.6;
         }
-        
-        /* News Section */
+
         .news {
             padding: 6rem 5%;
         }
@@ -353,8 +349,7 @@
             color: var(--gray);
             font-size: 0.9rem;
         }
-        
-        /* Trading Widget Section */
+
         .trading-widget {
             padding: 0 5% 6rem;
         }
@@ -392,8 +387,7 @@
         .symbol-btn.active, .symbol-btn:hover {
             background: var(--primary);
         }
-        
-        /* Prediction Section */
+
         .prediction {
             padding: 6rem 5%;
             text-align: center;
@@ -575,7 +569,7 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
+
     <nav class="navbar">
         <div class="logo">
             <i class="fas fa-chart-line logo-icon"></i>
@@ -596,7 +590,6 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
             <h1 class="hero-title">Advanced Trading Platform for Modern Investors</h1>
@@ -612,7 +605,6 @@
         </div>
     </section>
 
-    <!-- Features Section -->
     <section class="features" id="features">
         <h2 class="section-title">Powerful Trading Features</h2>
         <div class="features-grid">
@@ -642,7 +634,6 @@
         </div>
     </section>
 
-    <!-- News Section -->
     <section class="news" id="news">
         <div class="news-header">
             <h2 class="section-title">Latest Financial News</h2>
@@ -702,7 +693,6 @@
         </div>
     </section>
 
-    <!-- Trading Widget Section -->
     <section class="trading-widget" id="trading">
         <h2 class="section-title">Live Market Data</h2>
         
@@ -725,7 +715,6 @@
         </div>
     </section>
 
-    <!-- Prediction Section -->
     <section class="prediction" id="prediction">
         <h2 class="section-title">AI-Powered Market Predictions</h2>
         
@@ -739,8 +728,6 @@
             </button>
         </div>
     </section>
-
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-grid">
             <div class="footer-col">
@@ -807,10 +794,8 @@
     </footer>
 
     <script>
-        // Trading Chart
         const ctx = document.getElementById('trading-chart').getContext('2d');
-        
-        // Generate mock trading data
+
         const labels = [];
         const data = [];
         let currentValue = 150;
@@ -821,8 +806,7 @@
             currentValue += change;
             data.push(currentValue);
         }
-        
-        // Create chart
+
         const tradingChart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -876,8 +860,7 @@
                 }
             }
         });
-        
-        // Simulate live updates
+
         setInterval(() => {
             tradingChart.data.labels.push('');
             tradingChart.data.labels.shift();
@@ -891,18 +874,15 @@
             
             tradingChart.update();
         }, 2000);
-        
-        // Symbol selector
+
         const symbolButtons = document.querySelectorAll('.symbol-btn');
         symbolButtons.forEach(button => {
             button.addEventListener('click', () => {
                 symbolButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
-                
-                // Update chart with new symbol
+
                 tradingChart.data.datasets[0].label = button.textContent;
-                
-                // Generate new data
+
                 const newData = [];
                 let newValue = 150;
                 
@@ -916,13 +896,11 @@
                 tradingChart.update();
             });
         });
-        
-        // Prediction button
+
         document.getElementById('predict-btn').addEventListener('click', () => {
             window.open('predict.html', '_blank');
         });
-        
-        // Smooth scrolling
+
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
